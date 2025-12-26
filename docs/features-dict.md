@@ -28,6 +28,18 @@ Este dataset contém os registros de focos de queimadas agrupados por ponto geog
 
 > **Importante**: Algumas colunas de tempo foram tratadas como categóricas, dada a sua natureza cíclica/sazonal.
 
+## `df_daily_stp`
+Este dataframe contém apenas os registros de 2023 e 2024. Essencialmente, é uma versão filtrada do `df_daily`, mas com os atributos meteorológicos que começaram a ser incorporados somente a partir de 2023.
+
+**Tamanho**: 9.908.400 linhas x 24 colunas.
+
+| Feature            | Tipo    | Descrição                                                                |
+|--------------------|---------|--------------------------------------------------------------------------|
+| dias_sem_chuva_max | Float64 | Número máximo de dias sem chuva até a detecção do foco                   |
+| precipitacao_max   | Float64 | Valor máximo de precipitação acumulada até o momento de detecção do foco |
+| risco_fogo_max     | Float64 | Valor máximo do Risco de Fogo previsto para o dia da detecção do foco    |
+| prf                | Float64 | Valor máximo de Potência Radiotiva do Fogo, em MW (megawatts)            |
+
 ## `df_monthly`
 Este dataframe faz um resumo geral por mês, contendo métricas agregadas dos registros de incêndios.
 
