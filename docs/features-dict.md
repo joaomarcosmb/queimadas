@@ -1,9 +1,9 @@
 # Dicionário de features
 
-## `df_daily`
+## `df_final_regression`
 Este dataset contém os registros de focos de queimadas agrupados por ponto geográfico e dia, isto é, os múltiplos registros por dia originais foram agregados num só. Os critérios de agregação podem ser vistos com mais detalhes no notebook `notebooks/1.0.0-eda-e-tratamento`.
 
-**Tamanho**: 11.912.771 linhas x 18 colunas.
+**Tamanho**: 13.586.093 linhas x 21 colunas.
 
 | Feature                  | Tipo        | Descrição                                                                    |
 |--------------------------|-------------|------------------------------------------------------------------------------|
@@ -11,7 +11,7 @@ Este dataset contém os registros de focos de queimadas agrupados por ponto geog
 | longitude                | Float64     | Longitude do ponto geográfico do registro                                    |
 | data_dia                 | Date        | Data do evento                                                               |
 | bioma                    | Categorical | Bioma associado ao ponto geográfico                                          |
-| sigla_uf                 | Categorical | Unidade da federação (UF)                                                    |
+| estado                   | Categorical | Unidade da federação (UF)                                                    |
 | ano                      | Int64       | Ano do evento                                                                |
 | mes                      | Categorical | Mês do ano (1 – 12)                                                          |
 | dia_ano                  | Categorical | Dia do ano (1 – 365/366)                                                     |
@@ -24,83 +24,52 @@ Este dataset contém os registros de focos de queimadas agrupados por ponto geog
 | hora_primeira_deteccao   | Int8        | Hora (0 – 23) da primeira detecção no dia                                    |
 | hora_ultima_deteccao     | Int8        | Hora (0 – 23) da última detecção no dia                                      |
 | num_deteccoes_dia        | UInt32      | Número total de detecções registradas no dia para o ponto                    |
-| multiplas_deteccoes      | Int8        | Indicador binário (0/1) se houve mais de uma detecção no dia                 |
+| num_dias_sem_chuva_max   | Float64     | Máx. de dias consecutivos sem chuva até o evento                             |
+| precipitacao_max         | Float64     | Máx. de precipitação acumulada até o evento                                  |
+| risco_fogo_max           | Float64     | Máx. valor do risco de fogo previsto no dia                                  |
+| frp                      | Float64     | Potência Radiativa do Fogo (Fire Radiative Power), em MW                     |
 
 > **Importante**: Algumas colunas de tempo foram tratadas como categóricas, dada a sua natureza cíclica/sazonal.
 
-## `df_daily_stp`
-Este dataframe contém apenas os registros de 2023 e 2024. Essencialmente, é uma versão filtrada do `df_daily`, mas com os atributos meteorológicos que começaram a ser incorporados somente a partir de 2023.
+## `df_final_classification`
+Versão diária do `df_final_regression` com foco em classificação da intensidade, incluindo rótulo (baixa, média e alta). Contém as mesmas features do dataset de regressão, exceto FRP, para evitar data leakage.
 
-**Tamanho**: 9.908.400 linhas x 24 colunas.
+**Tamanho**: 13.586.093 linhas x 21 colunas.
 
-| Feature            | Tipo    | Descrição                                                                |
-|--------------------|---------|--------------------------------------------------------------------------|
-| dias_sem_chuva_max | Float64 | Número máximo de dias sem chuva até a detecção do foco                   |
-| precipitacao_max   | Float64 | Valor máximo de precipitação acumulada até o momento de detecção do foco |
-| risco_fogo_max     | Float64 | Valor máximo do Risco de Fogo previsto para o dia da detecção do foco    |
-| prf                | Float64 | Valor máximo de Potência Radiotiva do Fogo, em MW (megawatts)            |
+| Feature           | Tipo        | Descrição                         |
+|-------------------|-------------|-----------------------------------|
+| label_intensidade | Categorical | Classe de intensidade da queimada |
 
-## `df_monthly`
-Este dataframe faz um resumo geral por mês, contendo métricas agregadas dos registros de incêndios.
+## `monthly`
+Este dataframe faz um resumo geral por mês, contendo métricas agregadas dos registros de incêndios. A tabela a seguir contém a descrição das principais colunas. As demais colunas seguem uma lógica similar.
 
-**Tamanho**: 120 linhas x 11 colunas.
+**Tamanho**: 81 linhas x 25 colunas.
 
-| Feature                   | Tipo    | Descrição                                                 |
-|---------------------------|---------|-----------------------------------------------------------|
-| mes_inicio                | Date    | Data correspondente ao primeiro dia do mês                |
-| ano_mes_year              | Int32   | Ano de referência                                         |
-| ano_mes_month             | Int8    | Mês de referência (1 – 12)                                |
-| ano_mes                   | String  | Identificador textual do mês no formato `YYYY-MM`         |
-| n_dias_com_evento         | UInt32  | Número de dias no mês com ao menos um evento registrado   |
-| total_deteccoes_mes       | UInt32  | Total de detecções acumuladas no mês                      |
-| media_deteccoes_por_dia   | Float64 | Média de detecções por dia (considerando dias com evento) |
-| mediana_deteccoes_por_dia | Float64 | Mediana de detecções por dia no mês                       |
-| pct_multiplas_deteccoes   | Float64 | Proporção de dias com múltiplas detecções                 |
-| n_lat_distintas           | UInt32  | Número de latitudes distintas com evento no mês           |
-| n_lon_distintas           | UInt32  | Número de longitudes distintas com evento no mês          |
+| Feature                      | Tipo    | Descrição                                            |
+|------------------------------|---------|------------------------------------------------------|
+| dias_no_mes                  | Int8    | Total de dias no mês                                 |
+| n_dias_com_evento            | UInt32  | Dias com ao menos uma detecção                       |
+| total_deteccoes_mes          | UInt32  | Total de detecções no mês                            |
+| deteccoes_por_dia_calendario | Float64 | Média de detecções por dia do calendário             |
+| n_pontos_distintos           | UInt32  | Número de pontos geográficos distintos com queimadas |
+| frp_total_mes                | Float64 | FRP total acumulado no mês                           |
+| frp_por_deteccao             | Float64 | FRP médio por detecção                               |
+| mean_dias_sem_chuva_max      | Float64 | Média mensal do máximo de dias sem chuva             |
+| mean_precipitacao_max        | Float64 | Média mensal da precipitação máxima                  |
+| mean_risco_fogo_max          | Float64 | Média mensal do risco de fogo máximo                 |
 
 
-## `df_monthly_biome`
-Este conjunto de dados segue a mesma lógica do `df_monthly`, mas com segmentações feitas por bioma.
+## `monthly_biome`
+Este conjunto de dados segue a mesma lógica do `monthly`, mas com segmentações feitas por bioma.
 
-**Tamanho**: 720 linhas x 8 colunas.
-
-| Feature                 | Tipo        | Descrição                                          |
-|-------------------------|-------------|----------------------------------------------------|
-| bioma                   | Categorical | Bioma                                              |
-| mes_inicio              | Date        | Data correspondente ao primeiro dia do mês         |
-| ano_mes_year            | Int32       | Ano da agregação mensal                            |
-| ano_mes_month           | Int8        | Mês da agregação mensal (1 – 12)                   |
-| n_dias_com_evento       | UInt32      | Número de dias no mês com evento no bioma          |
-| total_deteccoes_mes     | UInt32      | Total de detecções no mês para o bioma             |
-| media_deteccoes_por_dia | Float64     | Média de detecções por dia no mês                  |
-| pct_multiplas_deteccoes | Float64     | Proporção de dias com múltiplas detecções no bioma |
-
+**Tamanho**: 500 linhas x 14 colunas.
 
 ## `climatology`
-Este dataset possui dados de médias históricas mensais, agregados ao longo dos anos.
+Este dataset possui dados de estatísticas históricas mensais, agregados ao longo dos anos.
 
-**Tamanho**: 12 linhas x 5 colunas.
-
-| Feature                  | Tipo    | Descrição                                                    |
-|--------------------------|---------|--------------------------------------------------------------|
-| mes_num                  | Int8    | Mês do ano (1 – 12)                                          |
-| mean_n_dias_com_evento   | Float64 | Média histórica de dias com evento no mês                    |
-| mean_total_deteccoes_mes | Float64 | Média histórica do total de detecções no mês                 |
-| mean_media_deteccoes_dia | Float64 | Média histórica da média diária de detecções                 |
-| mean_pct_multiplas       | Float64 | Média histórica da proporção de dias com múltiplas detecções |
-
+**Tamanho**: 12 linhas x 4 colunas.
 
 ## `climatology_biome`
 Este conjunto de dados é similar ao `climatology`, mas segmentado por bioma.
 
-**Tamanho**: 72 linhas x 6 colunas.
-
-| Feature                  | Tipo        | Descrição                                                             |
-|--------------------------|-------------|-----------------------------------------------------------------------|
-| bioma                    | Categorical | Bioma                                                                 |
-| mes_num                  | Int8        | Mês do ano (1 – 12)                                                   |
-| mean_n_dias_com_evento   | Float64     | Média histórica de dias com evento no mês para o bioma                |
-| mean_total_deteccoes_mes | Float64     | Média histórica do total de detecções mensais no bioma                |
-| mean_media_deteccoes_dia | Float64     | Média histórica da média diária de detecções no bioma                 |
-| mean_pct_multiplas       | Float64     | Média histórica da proporção de dias com múltiplas detecções no bioma |
+**Tamanho**: 82 linhas x 8 colunas.
