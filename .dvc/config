@@ -1,0 +1,7 @@
+[core]
+    autostage = true
+    remote = gcs
+['remote "gcs"']
+    url = gs://bucket-queimadas/dvcstore
+['remote "myremote"']
+    url = gs://bucket-queimadas
