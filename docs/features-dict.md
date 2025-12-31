@@ -32,7 +32,7 @@ Este dataset contém os registros de focos de queimadas agrupados por ponto geog
 > **Importante**: Algumas colunas de tempo foram tratadas como categóricas, dada a sua natureza cíclica/sazonal.
 
 ## `df_final_classification`
-Versão diária do `df_final_regression` com foco em classificação da intensidade, incluindo rótulo (baixa, média e alta). Contém as mesmas features do dataset de regressão, exceto FRP, para evitar data leakage.
+Versão do `df_final_regression` com foco em classificação da intensidade, incluindo rótulo (baixa, média e alta). Contém as mesmas features do dataset de regressão, exceto FRP, para evitar data leakage.
 
 **Tamanho**: 13.586.093 linhas x 21 colunas.
 
